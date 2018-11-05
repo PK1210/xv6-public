@@ -88,6 +88,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = 60;
 
   release(&ptable.lock);
 
@@ -141,6 +142,7 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+  p->priority = 60;
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -495,7 +497,36 @@ kill(int pid)
   release(&ptable.lock);
   return -1;
 }
+//Ps
+int 
+ps(void)
+{
+  cprintf("Name \tPid \tPriority\n");
+  struct proc *p;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == RUNNING)
+      cprintf("%s \t%d \t%d\n",p->name,p->pid,p->priority);
+  }
+  release(&ptable.lock);
+  return 1;
+}
+int 
+set_priority(int pid,int priority)
+{
+  struct proc *p;
 
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+      p->priority = priority;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  release(&ptable.lock);
+  return -1;
+}
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.

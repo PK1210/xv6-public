@@ -103,6 +103,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_ps(void);
+extern int sys_set_priority(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -126,6 +128,8 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_ps]      sys_ps,
+[SYS_set_priority] sys_set_priority,
 };
 
 
@@ -151,6 +155,8 @@ static int (*syscalls[])(void) = {
 // [SYS_link]    "Link",
 // [SYS_mkdir]   "Mkdir",
 // [SYS_close]   "Close",
+// [SYS_ps]      "Ps",
+// [SYS_set_priority] "set_priority",
 // };
 
 

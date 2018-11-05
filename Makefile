@@ -166,6 +166,7 @@ mkfs: mkfs.c fs.h
 .PRECIOUS: %.o
 
 UPROGS=\
+	_bigtest\
 	_cat\
 	_echo\
 	_forktest\
@@ -176,7 +177,9 @@ UPROGS=\
 	_ln\
 	_ls\
 	_mkdir\
+	_ps\
 	_rm\
+	_set_priority\
 	_sh\
 	_stressfs\
 	_usertests\
@@ -251,7 +254,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
-	invertcase.c printf.c umalloc.c\
+	invertcase.c printf.c umalloc.c ps.c bigtest.c set_priority.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 
