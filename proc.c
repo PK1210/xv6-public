@@ -342,10 +342,10 @@ scheduler(void)
         continue;
       max_priority = p;
       //Choose process with equal or higher priority
-      for(iter = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      for(iter = ptable.proc; iter < &ptable.proc[NPROC]; iter++){
         if(iter->state != RUNNABLE)
           continue;
-        if(max_priority->priority<iter->priority)
+        if(max_priority->priority > iter->priority)
           max_priority = iter;
       }
       // Switch to chosen process.  It is the process's job
@@ -512,12 +512,20 @@ kill(int pid)
 int 
 ps(void)
 {
-  cprintf("Name \tPid \tPriority\n");
+  char *states[] = {
+  [UNUSED]    "unused",
+  [EMBRYO]    "embryo",
+  [SLEEPING]  "sleep ",
+  [RUNNABLE]  "runble",
+  [RUNNING]   "running",
+  [ZOMBIE]    "zombie"
+  };
+  cprintf("Name \tPid \tPriority \tStatus\n");
   struct proc *p;
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->state == RUNNING)
-      cprintf("%s \t%d \t%d\n",p->name,p->pid,p->priority);
+    if(p->state != UNUSED)
+      cprintf("%s \t %d \t %d \t %s\n",p->name,p->pid,p->priority,states[p->state]);
   }
   release(&ptable.lock);
   return 1;

@@ -4,36 +4,59 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "fcntl.h"
 
-#define N  100000000000
-
-// void
-// printf(int fd, const char *s, ...)
-// {
-//   write(fd, s, strlen(s));
-// }
+#define N  500009
 
 int 
 bigtest(void)
 {
-  int i;
+  int i,j;
   int count = 0;
-  for(i=0;i<N;i++)
-    count=i+1;
-  if(count==N)
+  int step = getpid();
+  for(i=0;i<N;i+=step)
+    for(j=0;j<N;j+=step)
+      count = count + 1;
+  if(count == N)
   {
-    printf(1,"Big test passed\n");
+    printf(1,"Process %d has passed bigtest\n",getpid());
     return 0;
   }
   else
+    printf(1,"Process %d failed bigtest\n",getpid());
+  return -1;
+}
+int 
+procGen(int n)
+{
+  int i,pid;
+  for(i=0;i<n;i++)
   {
-    printf(1,"Big test failed\n");
-    return -1;
+    pid = fork();
+    if(pid<0)
+      printf(1,"fork failed\n");
+    else if(pid>0)
+    {
+      //parent process
+      printf(1,"Parent %d has child %d\n",getpid(),pid);
+      //wait();
+    }
+    else
+    {
+      //child process
+      bigtest();
+    }
   }
+  return 0;
 }
 int
-main(void)
+main(int argc,char *argv[])
 {
-  bigtest();
+  int n;
+  if(argc<2)
+    n = 2;
+  else
+    n = atoi(argv[1]);
+  procGen(n);
   exit();
 }
